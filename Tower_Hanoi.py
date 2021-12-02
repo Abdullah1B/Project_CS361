@@ -25,9 +25,11 @@ class Tower_Hanoi(object):
 
     def moves(self,node:Node) -> Node: # design for 3 sticks
         """
+
         from A to B and C 
         from B to A and C
         from C to A and B
+        return a list of childer for the given node 
 
         """
         S_A = stick(node.Sticks[0])
@@ -77,7 +79,88 @@ class Tower_Hanoi(object):
         
         return list_moves
 
+    def path_to_goal(self,node:Node) -> Node: # return the path form goal node to start node 
+        Path = []
+        while node.parent != None:
+            Path.append(node)
+            node = node.parent
+        Path.append(self.Initial)
+        return Path
+
 
         
     def A_star_search(self):
+        cost = 0
+        self.Open_list.append(self.Initial)
+        while len(self.Open_list) > 0:
+            currentNode = self.next_node(cost)
+            self.Open_list.remove(currentNode)
+            cost += 1
+            self.Closed_list.append(currentNode)
+            if currentNode.Sticks == self.Goal.Sticks:
+                print(f"We reach to the goal\nExpanded nodes:{len(self.Closed_list)}")
+                return currentNode
+            else:
+                list_moves = self.moves(currentNode)
+                for next_move in list_moves:
+                    new_move = True
+                    for expanded in self.Closed_list:
+                        if expanded.Sticks == next_move.Sticks:
+                            new_move = False
+                    if new_move:
+                        for unexpanded in self.Open_list:
+                            if unexpanded.Sticks == next_move.Sticks:
+                                new_move = False
+                                if next_move.Fvalue != None:
+                                    if unexpanded.Fvalue > next_move.Fvalue:
+                                        self.Open_list.remove(unexpanded)
+                                        self.Open_list.append(next_move)
+                                        break
+                        if new_move:
+                            self.Open_list.append(next_move)
+
         pass
+if __name__ == "__main__":
+    Continue = True
+    while Continue:
+        try:
+            t = int(input("Enter the target 2 Or 3: "))
+            if t == 2 or t == 3:
+                Continue = False
+
+        except ValueError:
+            print("Enter either 2 Or 3\n")
+            continue
+    
+    Continue = True
+    while Continue:
+        try:
+            n = int(input("Enter the number of disk: "))
+            Continue = False
+        except ValueError:
+            print("Enter Intger value (1,2,3,....)\n")
+            continue
+    
+    Stick_a = stick(num_of_disk=n)
+    Stick_b = stick()
+    Stick_c = stick()
+    if t == 2:
+        G_Stick_a = stick()
+        G_Stick_b = stick(num_of_disk=n)
+        G_Stick_c = stick()
+    elif t == 3:
+        G_Stick_a = stick()
+        G_Stick_b = stick()
+        G_Stick_c = stick(num_of_disk=n)
+
+
+    Initial = Node(Stick_a,Stick_b,Stick_c,parent= None)
+    Goal = Node(G_Stick_a,G_Stick_b,G_Stick_c,parent= None, goal_node=True)
+    print(f"Initial: {Initial.Sticks}\nGoal: {Goal.Sticks}\n")
+    Tower =  Tower_Hanoi(Initial,Goal,t)
+    node = Tower.A_star_search()
+    Path = Tower.path_to_goal(node)
+    print(f"number of moves: {len(Path) - 1}\nFirst one is the Initial move\n ")
+    for i in reversed(Path):
+        print(i.Sticks)
+    
