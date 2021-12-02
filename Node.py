@@ -18,4 +18,4 @@ class Node(object):
         if target == 2:
             return len(goal_node.Sticks[1]) - len(self.Sticks[1]) # targt stick in the middle
         elif target == 3: 
-            return len(goal_node.Sticks[2]) - len(self.Sticks[2])) # target stick the last one 
+            return len(goal_node.Sticks[2]) - len(self.Sticks[2]) # target stick the last one 
