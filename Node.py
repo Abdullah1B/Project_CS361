@@ -1,6 +1,6 @@
 class Node(object):
     def __init__(self,Stick_a, Stick_b, Stick_c, parent, goal_node= False):
-        self.Sticks = ([e for e in Stick_a],
+        self.Towers = ([e for e in Stick_a],
                        [e for e in Stick_b],
                        [e for e in Stick_c])
         self.parent = parent
@@ -16,6 +16,6 @@ class Node(object):
         
     def forward_cost_heuristic(self,goal_node,target):# h(n) heuristic is the number of misplaced of disks in the target stick.
         if target == 2:
-            return len(goal_node.Sticks[1]) - len(self.Sticks[1]) # targt stick in the middle
+            return len(goal_node.Towers[1]) - len(self.Towers[1]) # targt stick in the middle
         elif target == 3: 
-            return len(goal_node.Sticks[2]) - len(self.Sticks[2]) # target stick the last one 
+            return len(goal_node.Towers[2]) - len(self.Towers[2]) # target stick the last one 
