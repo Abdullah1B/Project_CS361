@@ -11,6 +11,8 @@ class Tower_Hanoi(object):
         self.Closed_list = []
         if num_of_tower != 3:
             self.num_of_tower = 3
+        else:
+            self.num_of_tower = num_of_tower
 
     def next_node(self,cost:int) -> Node:
         child_cost = sys.maxsize
