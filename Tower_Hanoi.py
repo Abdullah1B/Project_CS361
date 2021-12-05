@@ -1,82 +1,85 @@
 from Node import Node
-from Stick import Stick as stick
+from Tower import Tower as tower
 import sys
 
 class Tower_Hanoi(object):
-    def __init__(self,Initial,Goal,target):
+    def __init__(self,Initial,Goal,target , num_of_tower):
         self.Initial = Initial
         self.Goal = Goal
         self.target = target
-        self.Open_list = []
+        self.Open_list  = [] 
         self.Closed_list = []
+        self.num_of_tower = num_of_tower
 
     def next_node(self,cost:int) -> Node:
         child_cost = sys.maxsize
-        index = 0
         child_Index = sys.maxsize
-        for node in self.Open_list:
-            node_cost = node.f(cost,self.Goal,self.target)
-            if child_cost > node_cost:
+
+        for i , node in enumerate(self.Open_list):
+            node_cost = node.f(cost,self.Goal,self.target) # f(n) = g(n) + h(n)
+            if node_cost < child_cost:
                 child_cost = node_cost
-                child_Index = index
-            index += 1
-        next_node = self.Open_list[child_Index]
-        return next_node
+                child_Index = i
+        return self.Open_list[child_Index]
+    
+    def Copy(self,s3):
+            copy = (tower(s3[0].disks[:]),tower(s3[1].disks[:]),tower(s3[2].disks[:]))
+            return copy
 
-    def moves(self,node:Node) -> Node: # design for 3 sticks
-        """
+    def moves(self, node:Node) -> Node: 
+        x = 0
+        towers = []
+        while x < self.num_of_tower:
+            towers.append(tower(node.Towers[x]))
+            x += 1
 
-        from A to B and C 
-        from B to A and C
-        from C to A and B
-        return a list of childer for the given node 
 
-        """
-        S_A = stick(node.Sticks[0])
-        S_B = stick(node.Sticks[1])
-        S_C = stick(node.Sticks[2])
 
+        copy_towers = []
         list_moves = []
+        
+        Tower = 0
+        stop = self.num_of_tower * 2
+        divisor = self.num_of_tower - 1 # in our case the number of tower is 3
 
-        A = stick(S_A.disks[:])
-        B = stick(S_B.disks[:])
-        
-        A.travel(B) # move disk from A to B
-        list_moves.append(Node(A, B, S_C, parent= node))
-        
-        A = stick(S_A.disks[:])
-        C = stick(S_C.disks[:])
-        
-        A.travel(C) # move disk from A to C
-        list_moves.append(Node(A, S_B, C, parent= node))
-        
-        A = stick(S_A.disks[:])
-        B = stick(S_B.disks[:])
-        
-        B.travel(A) # move disk from B to A
-        list_moves.append(Node(A, B, S_C, parent= node))
-        
-        
-        B = stick(S_B.disks[:])
-        C = stick(S_C.disks[:])
-        
-        B.travel(C) # move disk from B to C
-        list_moves.append(Node(S_A, B, C, parent= node))
 
-        
-        C = stick(S_C.disks[:])
-        A = stick(S_A.disks[:])
-        
-        C.travel(A) # move disk from C to A
-        list_moves.append(Node(A, S_B, C, parent= node))
+        copy_towers = self.Copy(towers)
+        while Tower < stop:
+           
+            
+            if Tower in [0 , 1]: # A --> 0 // 2 = 0 or 1 // 0 = 0 which we at 'A' first tower by taking the floor
+                if Tower == 0:# A to B
+                    copy_towers[ Tower // divisor ].travel(copy_towers[1])
+                    list_moves.append(Node(copy_towers[Tower // 2] ,copy_towers[1], towers[2], parent= node))
+                    
+                
+                else: # A to C
+                    copy_towers[Tower // divisor].travel(copy_towers[2])
+                    list_moves.append(Node(copy_towers[Tower // 2] ,towers[1], copy_towers[2], parent= node))
+                    
+            if Tower in [2 , 3]:# B --> 2 // 2 = 1 or 3 // 2 = 1 which we at 'B' second tower 
+                if Tower == 2: # B to A
+                    copy_towers[Tower // divisor].travel(copy_towers[0])
+                    list_moves.append(Node(copy_towers[0] ,copy_towers[Tower // 2], towers[2], parent= node))
+                
+                else:# B to C
+                    copy_towers[Tower // divisor].travel(copy_towers[2])
+                    list_moves.append(Node(towers[0] ,copy_towers[Tower // 2], copy_towers[2], parent= node))
 
-        
-        C = stick(S_C.disks[:])
-        B = stick(S_B.disks[:])
-        
-        C.travel(B) # move disk from C to B
-        list_moves.append(Node(S_A, B, C, parent= node))
-        
+            if Tower in [4 , 5]:# C --> 4 // 2 = 2 , 5 // 2 = 2 which we at 'C' third tower 
+                if Tower == 4:# C to A
+                    copy_towers[Tower // divisor].travel(copy_towers[0])
+                    list_moves.append(Node(copy_towers[0] , towers[1], copy_towers[Tower // 2],parent=node ))
+                else: # C to B
+                    copy_towers[Tower // divisor].travel(copy_towers[1])
+                    list_moves.append(Node(towers[0] , copy_towers[1], copy_towers[Tower // 2] , parent= node ))
+            
+            
+            Tower += 1
+            copy_towers = self.Copy(towers)
+            
+
+
         return list_moves
 
     def path_to_goal(self,node:Node) -> Node: # return the path form goal node to start node 
@@ -97,19 +100,19 @@ class Tower_Hanoi(object):
             self.Open_list.remove(currentNode)
             cost += 1
             self.Closed_list.append(currentNode)
-            if currentNode.Sticks == self.Goal.Sticks:
+            if currentNode.Towers == self.Goal.Towers:
                 print(f"We reach to the goal\nExpanded nodes:{len(self.Closed_list)}")
                 return currentNode
             else:
-                list_moves = self.moves(currentNode)
+                list_moves : Node = self.moves(currentNode)
                 for next_move in list_moves:
                     new_move = True
                     for expanded in self.Closed_list:
-                        if expanded.Sticks == next_move.Sticks:
+                        if expanded.Towers == next_move.Towers:
                             new_move = False
                     if new_move:
                         for unexpanded in self.Open_list:
-                            if unexpanded.Sticks == next_move.Sticks:
+                            if unexpanded.Towers == next_move.Towers:
                                 new_move = False
                                 if next_move.Fvalue != None:
                                     if unexpanded.Fvalue > next_move.Fvalue:

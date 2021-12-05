@@ -1,5 +1,5 @@
 from Node import Node
-from Stick import Stick as stick
+from Tower import Tower as tower
 from Tower_Hanoi import Tower_Hanoi
 
 Continue = True
@@ -21,27 +21,26 @@ while Continue:
         print("Enter Intger value (1,2,3,....)\n")
         continue
 
-Stick_a = stick(num_of_disk=n)
-Stick_b = stick()
-Stick_c = stick()
+Stick_a = tower(num_of_disk=n)
+Stick_b = tower()
+Stick_c = tower()
 
 if t == 2:
-    G_Stick_a = stick()
-    G_Stick_b = stick(num_of_disk=n)
-    G_Stick_c = stick()
+    G_Stick_a = tower()
+    G_Stick_b = tower(num_of_disk=n)
+    G_Stick_c = tower()
 elif t == 3:
-    G_Stick_a = stick()
-    G_Stick_b = stick()
-    G_Stick_c = stick(num_of_disk=n)
+    G_Stick_a = tower()
+    G_Stick_b = tower()
+    G_Stick_c = tower(num_of_disk=n)
 
 Initial = Node(Stick_a, Stick_b, Stick_c, parent=None)
 Goal = Node(G_Stick_a, G_Stick_b, G_Stick_c, parent=None, goal_node=True)
-print(f"Initial: {Initial.Sticks}\nGoal: {Goal.Sticks}\n")
+print(f"Initial: {Initial.Towers}\nGoal: {Goal.Towers}\n")
 
-Tower = Tower_Hanoi(Initial, Goal, t)
+Tower = Tower_Hanoi(Initial, Goal, t , num_of_tower= 3) 
 node = Tower.A_star_search()
 Path = Tower.path_to_goal(node)
-
 print(f"number of moves: {len(Path) - 1}\nFirst one is the Initial move\n ")
-for i in reversed(Path):
-    print(i.Sticks)
+for i , move in enumerate( reversed(Path)):
+    print(f'No: {i}  {move.Towers}')
