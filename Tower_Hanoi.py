@@ -3,13 +3,14 @@ from Tower import Tower as tower
 import sys
 
 class Tower_Hanoi(object):
-    def __init__(self,Initial,Goal,target , num_of_tower):
+    def __init__(self,Initial,Goal,target , num_of_tower = 3):
         self.Initial = Initial
         self.Goal = Goal
         self.target = target
         self.Open_list  = [] 
         self.Closed_list = []
-        self.num_of_tower = num_of_tower
+        if num_of_tower != 3:
+            self.num_of_tower = 3
 
     def next_node(self,cost:int) -> Node:
         child_cost = sys.maxsize
@@ -60,19 +61,19 @@ class Tower_Hanoi(object):
             if Tower in [2 , 3]:# B --> 2 // 2 = 1 or 3 // 2 = 1 which we at 'B' second tower 
                 if Tower == 2: # B to A
                     copy_towers[Tower // divisor].travel(copy_towers[0])
-                    list_moves.append(Node(copy_towers[0] ,copy_towers[Tower // 2], towers[2], parent= node))
+                    list_moves.append(Node(copy_towers[0] ,copy_towers[Tower // divisor], towers[2], parent= node))
                 
                 else:# B to C
                     copy_towers[Tower // divisor].travel(copy_towers[2])
-                    list_moves.append(Node(towers[0] ,copy_towers[Tower // 2], copy_towers[2], parent= node))
+                    list_moves.append(Node(towers[0] ,copy_towers[Tower // divisor], copy_towers[2], parent= node))
 
             if Tower in [4 , 5]:# C --> 4 // 2 = 2 , 5 // 2 = 2 which we at 'C' third tower 
                 if Tower == 4:# C to A
                     copy_towers[Tower // divisor].travel(copy_towers[0])
-                    list_moves.append(Node(copy_towers[0] , towers[1], copy_towers[Tower // 2],parent=node ))
+                    list_moves.append(Node(copy_towers[0] , towers[1], copy_towers[Tower // divisor],parent=node ))
                 else: # C to B
                     copy_towers[Tower // divisor].travel(copy_towers[1])
-                    list_moves.append(Node(towers[0] , copy_towers[1], copy_towers[Tower // 2] , parent= node ))
+                    list_moves.append(Node(towers[0] , copy_towers[1], copy_towers[Tower // divisor] , parent= node ))
             
             
             Tower += 1

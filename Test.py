@@ -38,7 +38,7 @@ Initial = Node(Stick_a, Stick_b, Stick_c, parent=None)
 Goal = Node(G_Stick_a, G_Stick_b, G_Stick_c, parent=None, goal_node=True)
 print(f"Initial: {Initial.Towers}\nGoal: {Goal.Towers}\n")
 
-Tower = Tower_Hanoi(Initial, Goal, t , num_of_tower= 3) 
+Tower = Tower_Hanoi(Initial, Goal, t) 
 node = Tower.A_star_search()
 Path = Tower.path_to_goal(node)
 print(f"number of moves: {len(Path) - 1}\nFirst one is the Initial move\n ")
