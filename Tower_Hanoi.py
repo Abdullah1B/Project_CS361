@@ -3,7 +3,7 @@ from Tower import Tower as tower
 import sys
 
 class Tower_Hanoi(object):
-    def __init__(self,Initial,Goal,target , num_of_tower = 3):
+    def __init__(self,Initial,Goal,target ,heuristic_n, num_of_tower = 3):
         self.Initial = Initial
         self.Goal = Goal
         self.target = target
@@ -13,13 +13,14 @@ class Tower_Hanoi(object):
             self.num_of_tower = 3
         else:
             self.num_of_tower = num_of_tower
+        self.heuristic_n = heuristic_n
 
     def next_node(self,cost:int) -> Node:
         child_cost = sys.maxsize
         child_Index = sys.maxsize
 
         for i , node in enumerate(self.Open_list):
-            node_cost = node.f(cost,self.Goal,self.target) # f(n) = g(n) + h(n)
+            node_cost = node.f(cost,self.Goal,self.target ,self.heuristic_n) # f(n) = g(n) + h(n)
             if node_cost < child_cost:
                 child_cost = node_cost
                 child_Index = i
