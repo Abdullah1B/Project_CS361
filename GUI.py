@@ -62,7 +62,7 @@ def visual_hanoi_simulation( base_width, peg_height, moves):
                     display_pile_of_pegs(pile, 50 + SPACE_PER_PEG*i, 500, peg_height, screen)
                 pygame.display.flip()
 
-                clock.tick(3)
+                clock.tick(0.5)
             Continue= False
         draw_text(f"moves: {num_move} ", Font2, (255,0,0), screen,500 ,10 ) 
         draw_text("we reach the goal", Font, (255,0,0), screen,100 ,30 ) 
@@ -76,8 +76,8 @@ if __name__ == "__main__":
     G_tower_a = tower()
     G_tower_b = tower()
     G_tower_c = tower(num_of_disk=3)
-    Initial = Node(tower_a, tower_b, tower_c, parent=None)
-    Goal = Node(G_tower_a, G_tower_b, G_tower_c, parent=None, goal_node=True)
+    Initial = Node([tower_a.disks[:], tower_b.disks[:], tower_c.disks[:]], parent=None)
+    Goal = Node([G_tower_a.disks[:], G_tower_b.disks[:], G_tower_c.disks[:]], parent=None, goal_node=True)
     Tower = Tower_Hanoi(Initial, Goal, 3, 2) 
     node = Tower.A_star_search()
     Path = Tower.path_to_goal(node)
