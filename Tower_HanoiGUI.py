@@ -57,7 +57,7 @@ def visual_hanoi_simulation( base_width, peg_height, moves):
                     display_pile_of_pegs(pile, 50 + SPACE_PER_PEG*i, 500, peg_height, screen)
                 pygame.display.flip()
 
-                clock.tick(10)
+                clock.tick(3)
             Continue= False
         draw_text("we reach the goal", Font, (255,0,0), screen,100 ,10 ) 
         pygame.display.update()

@@ -3,16 +3,13 @@ from Tower import Tower as tower
 import sys
 
 class Tower_Hanoi(object):
-    def __init__(self,Initial,Goal,target ,heuristic_n, num_of_tower = 3):
+    def __init__(self,Initial,Goal,target ,heuristic_n):
         self.Initial = Initial
         self.Goal = Goal
         self.target = target
         self.Open_list  = [] 
         self.Closed_list = []
-        if num_of_tower != 3:
-            self.num_of_tower = 3
-        else:
-            self.num_of_tower = num_of_tower
+        self.num_of_tower = 3
         self.heuristic_n = heuristic_n
 
     def next_node(self,cost:int) -> Node:
@@ -26,67 +23,41 @@ class Tower_Hanoi(object):
                 child_Index = i
         return self.Open_list[child_Index]
     
-    def Copy(self,s3):
-            copy = (tower(s3[0].disks[:]),tower(s3[1].disks[:]),tower(s3[2].disks[:]))
-            return copy
 
-    def moves(self, node:Node) -> Node: 
-        x = 0
-        towers = []
-        while x < self.num_of_tower:
-            towers.append(tower(node.Towers[x]))
-            x += 1
+    def moves(self,node:Node):
 
-
-
-        copy_towers = []
-        list_moves = []
+        def list_disk(list):
+            disks = []
+            for  l in list:
+                disks.append(l.disks[:])
+            return disks
         
+        towers = (tower(node.Towers[0]) ,tower(node.Towers[1]), tower(node.Towers[2])) 
+
+        
+        copy_towers = ((tower(towers[0].disks[:]),tower(towers[1].disks[:]),tower(towers[2].disks[:])))
+        MoveTo = [0 , 1 , 2]
+        list_moves = []
         Tower = 0
-        stop = self.num_of_tower * 2
-        divisor = self.num_of_tower - 1 # in our case the number of tower is 3
 
+        
+        while (Tower < self.num_of_tower):
 
-        copy_towers = self.Copy(towers)
-        while Tower < stop:
-           
-            
-            if Tower in [0 , 1]: # A --> 0 // 2 = 0 or 1 // 0 = 0 which we at 'A' first tower by taking the floor
-                if Tower == 0:# A to B
-                    copy_towers[ Tower // divisor ].travel(copy_towers[1])
-                    list_moves.append(Node(copy_towers[Tower // 2] ,copy_towers[1], towers[2], parent= node))
+            if Tower in MoveTo:
+                MoveTo.remove(Tower)
+                for move in MoveTo:
+                    copy_towers[Tower].travel(copy_towers[move])
                     
-                
-                else: # A to C
-                    copy_towers[Tower // divisor].travel(copy_towers[2])
-                    list_moves.append(Node(copy_towers[Tower // 2] ,towers[1], copy_towers[2], parent= node))
-                    
-            if Tower in [2 , 3]:# B --> 2 // 2 = 1 or 3 // 2 = 1 which we at 'B' second tower 
-                if Tower == 2: # B to A
-                    copy_towers[Tower // divisor].travel(copy_towers[0])
-                    list_moves.append(Node(copy_towers[0] ,copy_towers[Tower // divisor], towers[2], parent= node))
-                
-                else:# B to C
-                    copy_towers[Tower // divisor].travel(copy_towers[2])
-                    list_moves.append(Node(towers[0] ,copy_towers[Tower // divisor], copy_towers[2], parent= node))
-
-            if Tower in [4 , 5]:# C --> 4 // 2 = 2 , 5 // 2 = 2 which we at 'C' third tower 
-                if Tower == 4:# C to A
-                    copy_towers[Tower // divisor].travel(copy_towers[0])
-                    list_moves.append(Node(copy_towers[0] , towers[1], copy_towers[Tower // divisor],parent=node ))
-                else: # C to B
-                    copy_towers[Tower // divisor].travel(copy_towers[1])
-                    list_moves.append(Node(towers[0] , copy_towers[1], copy_towers[Tower // divisor] , parent= node ))
-            
-            
-            Tower += 1
-            copy_towers = self.Copy(towers)
-            
-
-
+                    disks = list_disk(copy_towers)
+                    list_moves.append(Node( disks ,parent= node))
+                    copy_towers = ((tower(towers[0].disks[:]),tower(towers[1].disks[:]),tower(towers[2].disks[:])))
+            MoveTo = [0 , 1, 2]
+            Tower +=1
         return list_moves
+        
 
-    def path_to_goal(self,node:Node) -> Node: # return the path form goal node to start node 
+
+    def path_to_goal(self,node:Node) -> list: # return the path form goal node to start node 
         Path = []
         while node.parent != None:
             Path.append(node)
@@ -108,7 +79,7 @@ class Tower_Hanoi(object):
                 print(f"We reach to the goal\nExpanded nodes:{len(self.Closed_list)}")
                 return currentNode
             else:
-                list_moves : Node = self.moves(currentNode)
+                list_moves = self.moves(currentNode)
                 for next_move in list_moves:
                     new_move = True
                     for expanded in self.Closed_list:

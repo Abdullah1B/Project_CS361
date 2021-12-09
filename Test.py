@@ -1,6 +1,7 @@
 from Node import Node
 from Tower import Tower as tower
 from Tower_Hanoi import Tower_Hanoi
+import time
 
 class Test:
 
@@ -45,13 +46,17 @@ class Test:
         G_Stick_b = tower()
         G_Stick_c = tower(num_of_disk=n)
 
-    Initial = Node(Stick_a, Stick_b, Stick_c, parent=None)
-    Goal = Node(G_Stick_a, G_Stick_b, G_Stick_c, parent=None, goal_node=True)
+    Initial = Node([Stick_a.disks[:], Stick_b.disks[:], Stick_c.disks[:]], parent=None)
+    Goal = Node([G_Stick_a.disks[:], G_Stick_b.disks[:], G_Stick_c.disks[:]], parent=None, goal_node=True)
     print(f"Initial: {Initial.Towers}\nGoal: {Goal.Towers}\n")
 
     Tower = Tower_Hanoi(Initial, Goal, t , heuristic_n) 
+    start_time = time.time()
+
+    
     node = Tower.A_star_search()
     Path = Tower.path_to_goal(node)
     print(f"number of moves: {len(Path) - 1}\nFirst one is the Initial move\n ")
     for i , move in enumerate( reversed(Path)):
         print(f'No: {i}: {move.Towers}')
+    print("--- %s seconds ---" % (time.time() - start_time))

@@ -1,15 +1,13 @@
 class Node(object):
-    def __init__(self,Stick_a, Stick_b, Stick_c, parent, goal_node= False):
-        self.Towers = ([e for e in Stick_a],
-                       [e for e in Stick_b],
-                       [e for e in Stick_c])
+    def __init__(self,Towers, parent, goal_node= False):
+        self.Towers = Towers 
         self.parent = parent
         self.goal_node = goal_node
         self.Fvalue = None
     
     def f(self,cost,goal_node,target, hur):# f(n) = g(n) + h(n)
         if hur == 1:
-            self.Fvalue = self.backward_cost_g(cost) + self.heuristic_1(goal_node,target)
+            self.Fvalue = self.backward_cost_g(cost) + self.misplaced(goal_node,target)
             return self.Fvalue
         elif hur == 2:
             self.Fvalue = self.backward_cost_g(cost) + self.heuristic_2(goal_node,target)
@@ -18,9 +16,8 @@ class Node(object):
     def backward_cost_g(self,cost): # g(n)
         return cost + 1
         
-    def heuristic_1(self,goal_node,target):# h(n) heuristic is the number of misplaced of disks in the target stick.
+    def misplaced(self,goal_node,target):# h(n) heuristic is the number of misplaced of disks in the target stick.
         if target == 2:
-            #return (len(goal_node.Towers[:]) + 2) % 2
             return len(goal_node.Towers[1]) - len(self.Towers[1]) # targt stick in the middle
         elif target == 3:
             return len(goal_node.Towers[2]) - len(self.Towers[2]) # target stick the last one 
